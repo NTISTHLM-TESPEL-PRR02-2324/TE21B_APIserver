@@ -4,31 +4,24 @@ using TE21B_APIserver;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 WebApplication app = builder.Build();
 
-// app.MapGet("/", () => "Hello World!");
+app.Urls.Add("http://*:5288");
+
+TeacherCollection collection = new();
 
 app.MapGet("/", GetHello);
 app.MapGet("/hello", () => "Goodbye");
 
-app.MapGet("/teachers/{number}", GetTeacher);
+app.MapGet("/teachers/{number}", 
+  collection.GetTeacher);
+
+app.MapGet("/teachers/", collection.GetAllTeachers);
+
+app.MapPost("/teachers/", collection.AddTeacher);
 
 app.Run();
 
 
-static IResult GetTeacher(int number)
-{
-  List<Teacher> teachers = new() {
-    new() {Name = "Micke", HitPoints = 100},
-    new() {Name = "Martin", HitPoints = 3 },
-    new() {Name = "Lena", HitPoints = 9000 }
-  };
 
-  if (number < 0 || number >= teachers.Count)
-  {
-    return Results.NotFound();
-  }
-
-  return Results.Ok(teachers[number]);
-}
 
 
 
